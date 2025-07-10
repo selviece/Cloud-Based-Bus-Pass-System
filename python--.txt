@@ -1,0 +1,35 @@
+from flask import Blueprint, request, jsonify
+from database import db
+from models import ticket_schema
+from datetime import datetime
+
+booking_bp = Blueprint('booking', __name__)
+
+@booking_bp.route('/book', methods=['POST'])
+def book_ticket():
+    data = request.json
+    required_fields = ['user_id', 'bus_number', 'date', 'seat_number', 'price']
+    
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing data"}), 400
+
+    # Check for duplicate booking
+    existing = db.tickets.find_one({
+        "bus_number": data['bus_number'],
+        "date": data['date'],
+        "seat_number": data['seat_number']
+    })
+    if existing:
+        return jsonify({"error": "Seat already booked"}), 409
+
+    # Validate pricing (example logic)
+    correct_price = 50  # fixed or dynamic logic
+    if float(data['price']) != correct_price:
+        return jsonify({"error": "Incorrect price"}), 400
+
+    # Store ticket
+    db.tickets.insert_one(ticket_schema(
+        data['user_id'], data['bus_number'], data['date'],
+        data['seat_number'], data['price']
+    ))
+    return jsonify({"message": "Ticket booked successfully"}), 201

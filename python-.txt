@@ -1,0 +1,18 @@
+from datetime import datetime
+
+def user_schema(username, password_hash):
+    return {
+        "username": username,
+        "password": password_hash
+    }
+
+def ticket_schema(user_id, bus_number, date, seat_number, price):
+    return {
+        "user_id": user_id,
+        "bus_number": bus_number,
+        "date": date,
+        "seat_number": seat_number,
+        "price": price,
+        "status": "booked",
+        "created_at": datetime.utcnow()
+    }

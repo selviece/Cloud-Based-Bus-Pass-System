@@ -1,0 +1,6 @@
+from pymongo import MongoClient
+
+# Replace with your MongoDB Atlas URI
+MONGO_URI = "mongodb+srv://<username>:<password>@cluster.mongodb.net/buspass"
+client = MongoClient(MONGO_URI)
+db = client["bus_pass_system"]
